@@ -22,8 +22,10 @@ Y_train = tf.convert_to_tensor(mnist.train.labels)
 X_test = tf.convert_to_tensor(mnist.test.images)
 Y_test = tf.convert_to_tensor(mnist.test.labels)
 
+nbatch = 10
+batchsize = -(-X.train.shape[0] // nbatch)
 lrate = 0.1
-in_dim = X_train.shape[1]
+in_dim = X_train.shape
 hdim1 = 50
 out_dim = 10
 
@@ -32,7 +34,6 @@ l1 = add_layer(x, 1, in_dim, hdim1)
 output = add_layer(l1, 2, hdim1, out_dim)
 
 # #output = tf.compat.v1.Variable(tf.random.normal(shape=[10], mean=0, stddev=1.0), dtype=tf.float32)
-
 loss_op = tf.losses.mean_squared_error(labels = Y_train, predictions = output)
 train_op = tf.train.AdamOptimizer(learning_rate = lrate).minimize(loss_op)
 
