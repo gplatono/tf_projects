@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.python.client import device_lib
-from tensorflow.contrib.slim
+#from tensorflow.contrib.slim
 
 print(device_lib.list_local_devices())
 
