@@ -1,21 +1,16 @@
-#from __future__ import absolute_import, division, print_function, unicode_literals
 import tensorflow.compat.v1 as tf
-from sklearn import datasets as skds
+#from sklearn import datasets as skds
 from sklearn import model_selection
 import random
 import numpy as np
-import  matplotlib.pyplot as plt
+#import  matplotlib.pyplot as plt
 
 #xd, yd = skds.make_regression(n_samples = 20000,  n_features = 1,  n_informative = 2,  n_targets=1, noise= 1.0)
 
 #if (yd.ndim == 1):
 #	yd = yd.reshape(len(yd) ,1)
-xd = [[random.uniform(-10, 10) for i in range(2)] for j in range(10000)]
-yd = []
-for item in xd:
-	yd.append([float(item[0] * item[1] >= 0)])
-xd = np.array(xd)
-yd = np.array(yd)
+xd = np.array([[random.uniform(-10, 10) for i in range(2)] for j in range(10000)])
+yd = np.array([[float(x[0] * x[1] >= 0)] for x in xd])
 
 # for i in range(20):
 # 	print (xd[i], yd[i])

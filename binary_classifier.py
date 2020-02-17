@@ -3,30 +3,36 @@ from sklearn import model_selection
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow.compat.v1 as tf
-import tensorflow as TF
-
-mnist = TF.examples.tutorials.mnist.input_data.read_data_sets(os.path.join(datasetslib.datasets_root, 'mnist'), one_hot=True)
 
 X, y = skds.make_classification(n_samples=200, n_features=2, n_informative=2, n_redundant=0, n_repeated=0, n_classes=2, n_clusters_per_class=1)
   
+#The following plots the dataset    
+plt.scatter(X[:,0],X[:,1], marker='o', c = y)
+plt.show()
+
+if (y.ndim == 1):
+    y = y.reshape(-1,1)
+
+#Convert the output labels to one-hot encoding format
+y=np.eye(y.shape[1]+1)[y]
+y = np.array([item[0] for item in y])
+
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=.4, random_state=42)
 
-num_outputs = 10 # 0-9 digits
-num_inputs = 784 # total pixels, 28x28
+num_outputs = y.shape[1]
+num_inputs = X.shape[1]
+
 learning_rate = 0.001
 epochs = 3000
-batch_size = 100
-#The amount of batches used for training
-num_batches = int(mnist.train.num_examples / batch_size)
 
 with tf.Session() as sess:	
-	x = tf.placeholder(shape=[None, num_inputs], dtype=tf.float32, name='x')
-	y = tf.placeholder(shape=[None, num_outputs], dtype=tf.float32, name='y')
+	x = tf.placeholder(shape=[None, num_inputs], dtype=tf.float32)
+	y = tf.placeholder(shape=[None, num_outputs], dtype=tf.float32)
 
 	w = tf.Variable(tf.random.normal(shape=[num_inputs, num_outputs]), dtype=tf.float32, name='w')
 	b = tf.Variable(tf.random.normal(shape=[num_outputs]), dtype=tf.float32, name='b')
 
-	y_hat = tf.nn.softmax(tf.matmul(x, w) + b)
+	y_hat = tf.nn.sigmoid(tf.matmul(x, w) + b)
 	
 	loss = tf.reduce_mean(-tf.reduce_sum(y * tf.log(y_hat), axis=1))
 	optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
