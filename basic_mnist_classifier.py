@@ -1,56 +1,21 @@
-#import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow.compat.v1 as tf
-import tensorflow_datasets as tfds
-#from tensorflow.keras.datasets import mnist
+from tensorflow.keras.datasets import mnist
 
+#Load and preprocess the dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-Get the dataset and the accompaniying description
-mnist, mnist_info = tfds.load('mnist', with_info=True)
-
-print (mnist_info)
-
-# train = mnist['train']
-# test = mnist['test']
-
-# train = train.batch(256)
-# test = test.batch(1000).take(1)
-
-# #elem = test.take(1000)
-# for item in test:
-# 	X_test = item['image']
-# 	y_test = item['label']
-# 	print (y_test)
-
-
-#iter = train.make_one_shot_iterator()
-
-#X, y = iter.get_next()
-# for item in train:
-# 	X_train = item['image']
-# 	y_train = item['label']
-# 	print ("IMAGE: ", X_train)
-# 	print ("LABEL: ", y_train)
-@tf.function
-def predict(inputs):
-	w = tf.Variable(tf.random.normal(shape=[num_inputs, num_inputs, num_outputs]), dtype=tf.float32, name='w')
-	b = tf.Variable(tf.random.normal(shape=[num_outputs]), dtype=tf.float32, name='b')
-
-	y_hat = tf.nn.softmax(tf.tensordot(x, w, axes=[[1, 2], [0, 1]]) + b)
-	return y_hat
-
-@tf.function
-def train(train_data):
-	for item in train_data:
-		x_train = item['image']
-		y_train = item['label']
+x_train = x_train.reshape((x_train.shape[0], x_train.shape[1] * x_train.shape[2]))
+y_train = np.eye(10)[y_train.reshape(-1)]
+x_test = x_test.reshape((x_test.shape[0], x_test.shape[1] * x_test.shape[2]))
+y_test = np.eye(10)[y_test.reshape(-1)]
 
 num_outputs = 10 # digits 0-9
 num_inputs = 784 # 28x28 pixels
 learning_rate = 0.001
 epochs = 100
 batch_size = 300
-data_len = x_train.shape[0]
+data_len = x_train.shape[0] #Number of inputs in the dataset
 
 with tf.Session() as sess:
 	x = tf.placeholder(shape=[None, num_inputs], dtype=tf.float32, name='x')
@@ -67,18 +32,25 @@ with tf.Session() as sess:
 	acc = 100 * tf.reduce_sum(match) / tf.cast(tf.size(match), tf.float32)
 
 	tf.global_variables_initializer().run()
+
 	for epoch in range(epochs):
 		batch_idx = 0
+
+		#Total avg loss/acc for training data
 		avg_loss = avg_acc = 0
+
+		#Iterate over batches and run the optimization & compute loss/acc per batch
 		while batch_idx * batch_size < data_len:
 			start = batch_size * batch_idx
 			end = batch_size * (batch_idx + 1)
-			#print (sess.run(tf.matmul(x, w) + b, feed_dict={x: x_train[start: start+1], y: y_train[start: start+1]}))
+
 			sess.run(optimizer, feed_dict={x: x_train[start: end], y: y_train[start: end]})			
+
 			batch_loss, batch_acc = sess.run([loss, acc], feed_dict={x: x_train[start: end], y: y_train[start: end]})			
 			avg_loss += batch_loss
 			avg_acc += batch_acc
 			batch_idx += 1
+
 		avg_loss /= batch_idx
 		avg_acc /= batch_idx
 		print ("Epoch: {}, Loss: {:.2f}, Acc: {:.2f}%".format(epoch + 1, avg_loss, avg_acc))
