@@ -2,7 +2,7 @@ from sklearn import datasets as skds
 from sklearn import model_selection
 import matplotlib.pyplot as plt
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow.compat.v2 as tf
 
 X, y = skds.make_classification(n_samples=200, n_features=2, n_informative=2, n_redundant=0, n_repeated=0, n_classes=2, n_clusters_per_class=1)
   
