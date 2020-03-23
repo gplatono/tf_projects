@@ -30,11 +30,7 @@ epochs = 10000
 
 with tf.Session() as sess:
 	x = tf.placeholder(shape=[None, input_dim], dtype = tf.float32)
-	y = tf.placeholder(shape=[None, output_dim], dtype = tf.float32)
-
-	# w1 = tf.Variable(tf.random.normal(shape=[input_dim, output_dim]))
-	# b1 = tf.Variable(tf.random.normal(shape=[output_dim]))	
-	# y_hat = tf.matmul(x, w1) + b1
+	y = tf.placeholder(shape=[None, output_dim], dtype = tf.float32)	
 	
 	w1 = tf.Variable(tf.random.normal(shape=[input_dim, hidden_dim1], stddev = 1.0))
 	b1 = tf.Variable(tf.random.normal(shape=[hidden_dim1], stddev = 1.0))		
